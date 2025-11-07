@@ -1,0 +1,1869 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生産管理3級プランニング試験範囲カバー率分析レポート</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 60px;
+            margin-bottom: 40px;
+            page-break-after: always;
+            min-height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page:last-child {
+            page-break-after: auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .header .meta {
+            color: #718096;
+            font-size: 1.1em;
+        }
+
+        .section-title {
+            font-size: 2em;
+            color: #667eea;
+            margin: 40px 0 30px 0;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            font-weight: 600;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .highlight-box h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        .highlight-box .big-number {
+            font-size: 4em;
+            font-weight: 700;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: #f7fafc;
+            padding: 30px;
+            border-radius: 12px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card h3 {
+            color: #2d3748;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        .stat-card .label {
+            color: #718096;
+            font-size: 0.95em;
+        }
+
+        .coverage-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .coverage-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .coverage-table th {
+            padding: 18px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1em;
+        }
+
+        .coverage-table td {
+            padding: 15px 18px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .coverage-table tbody tr:hover {
+            background: #f7fafc;
+        }
+
+        .coverage-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .coverage-high {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .coverage-medium {
+            background: #feebc8;
+            color: #7c2d12;
+        }
+
+        .coverage-low {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .coverage-none {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .strength-weakness {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .strength-box,
+        .weakness-box {
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .strength-box {
+            background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+            border-left: 5px solid #22543d;
+        }
+
+        .weakness-box {
+            background: linear-gradient(135deg, #fed7d7 0%, #fc8181 100%);
+            border-left: 5px solid #742a2a;
+        }
+
+        .strength-box h3,
+        .weakness-box h3 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+
+        .strength-box ul,
+        .weakness-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .strength-box li,
+        .weakness-box li {
+            padding: 10px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .strength-box li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #22543d;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .weakness-box li:before {
+            content: "⚠";
+            position: absolute;
+            left: 0;
+            color: #742a2a;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .proposal-card {
+            background: #f7fafc;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .proposal-card h3 {
+            color: #667eea;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .proposal-card .priority {
+            display: inline-block;
+            background: #fed7d7;
+            color: #742a2a;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .proposal-card ul {
+            margin-left: 20px;
+            margin-top: 15px;
+        }
+
+        .proposal-card li {
+            margin: 8px 0;
+            color: #4a5568;
+        }
+
+        .impact-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .page-navigation {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .page-navigation button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .page-navigation button:hover {
+            background: #764ba2;
+        }
+
+        .page-navigation button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .page {
+                box-shadow: none;
+                margin-bottom: 0;
+            }
+
+            .page-navigation {
+                display: none;
+            }
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 30px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-title {
+            font-size: 1.3em;
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            font-size: 0.9em;
+        }
+
+        .comparison-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .comparison-table th {
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95em;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .comparison-table th:last-child {
+            border-right: none;
+        }
+
+        .comparison-table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e2e8f0;
+            border-right: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+
+        .comparison-table td:last-child {
+            border-right: none;
+        }
+
+        .comparison-table tbody tr:hover {
+            background: #f7fafc;
+        }
+
+        .comparison-table .match-cell {
+            background: #c6f6d5;
+            color: #22543d;
+            font-weight: 600;
+        }
+
+        .comparison-table .no-match-cell {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .comparison-table .section-header {
+            background: #edf2f7;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .comparison-table .subsection-header {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        /* 固定ヘッダーとツールバー */
+        .top-toolbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .search-box {
+            padding: 10px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            font-size: 0.95em;
+            width: 300px;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .toolbar-button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 600;
+            transition: background 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toolbar-button:hover {
+            background: #764ba2;
+        }
+
+        .toolbar-button.secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .toolbar-button.secondary:hover {
+            background: #cbd5e0;
+        }
+
+        body {
+            padding-top: 80px;
+        }
+
+        /* 目次 */
+        .table-of-contents {
+            position: fixed;
+            right: 30px;
+            top: 100px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 250px;
+            max-height: calc(100vh - 120px);
+            overflow-y: auto;
+            z-index: 999;
+        }
+
+        .table-of-contents h3 {
+            font-size: 1.1em;
+            color: #2d3748;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .toc-item {
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-size: 0.9em;
+            color: #4a5568;
+        }
+
+        .toc-item:hover {
+            background: #f7fafc;
+            color: #667eea;
+        }
+
+        .toc-item.active {
+            background: #667eea;
+            color: white;
+        }
+
+        /* 要約ボックス */
+        .summary-box {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #667eea;
+            margin: 30px 0;
+        }
+
+        .summary-box h4 {
+            color: #667eea;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        .summary-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .summary-box li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #4a5568;
+        }
+
+        .summary-box li:before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+        }
+
+        /* フィルター */
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        /* ハイライト */
+        .highlight {
+            background: yellow;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        /* 印刷時の調整 */
+        @media print {
+
+            .top-toolbar,
+            .table-of-contents,
+            .page-navigation {
+                display: none !important;
+            }
+
+            body {
+                padding-top: 0;
+                background: white;
+            }
+
+            .page {
+                box-shadow: none;
+                margin-bottom: 0;
+                page-break-after: always;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .table-of-contents {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .strength-weakness {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 固定ツールバー -->
+    <div class="top-toolbar">
+        <div class="toolbar-left">
+            <h2 style="margin: 0; color: #667eea; font-size: 1.3em;">生産管理3級 カバー率分析</h2>
+            <input type="text" id="searchInput" class="search-box" placeholder="🔍 検索...">
+        </div>
+        <div class="toolbar-right">
+            <button class="toolbar-button secondary" onclick="printReport()">📄 印刷</button>
+            <button class="toolbar-button" onclick="exportToPDF()">💾 PDF保存</button>
+        </div>
+    </div>
+
+    <!-- 目次 -->
+    <div class="table-of-contents">
+        <h3>📑 目次</h3>
+        <div class="toc-item" onclick="goToPage(1)">1. エグゼクティブサマリー</div>
+        <div class="toc-item" onclick="goToPage(2)">2. 詳細分析</div>
+        <div class="toc-item" onclick="goToPage(3)">3. 改善提案</div>
+    </div>
+
+    <div class="container">
+        <!-- ページ1: エグゼクティブサマリー -->
+        <div class="page" id="page1">
+            <div class="header">
+                <h1>生産管理3級プランニング試験範囲<br>カバー率分析レポート</h1>
+                <div class="meta">
+                    <strong>作成日:</strong> 2025年11月7日<br>
+                    <strong>分析対象:</strong> 生産管理3級プランニング試験範囲 vs 電気電子・機械設計向け講座
+                </div>
+            </div>
+
+            <div class="summary-box">
+                <h4>📋 このページの要点</h4>
+                <ul>
+                    <li>全体カバー率は20.1%で、改善の余地が大きい</li>
+                    <li>品質管理領域は68.0%と高いが、専門知識は14.6%に留まる</li>
+                    <li>未対応項目は64項目（全体の62.1%）</li>
+                    <li>生産計画・工程管理、原価管理が完全未対応</li>
+                </ul>
+            </div>
+
+            <div class="highlight-box">
+                <h2>総合カバー率</h2>
+                <div class="big-number">20.1%</div>
+                <p style="font-size: 1.2em; margin-top: 20px;">
+                    103項目中、完全対応（80%以上）は6項目のみ<br>
+                    未対応項目は64項目（全体の62.1%）
+                </p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>専門知識</h3>
+                    <div class="number">14.6%</div>
+                    <div class="label">26項目中、対応4項目</div>
+                </div>
+                <div class="stat-card">
+                    <h3>共通知識</h3>
+                    <div class="number">21.9%</div>
+                    <div class="label">77項目中、対応20項目</div>
+                </div>
+                <div class="stat-card">
+                    <h3>完全対応</h3>
+                    <div class="number">6</div>
+                    <div class="label">項目（80%以上）</div>
+                </div>
+                <div class="stat-card">
+                    <h3>未対応</h3>
+                    <div class="number">64</div>
+                    <div class="label">項目（0%）</div>
+                </div>
+            </div>
+
+            <div class="section-title">主要な発見</div>
+
+            <div class="strength-weakness">
+                <div class="strength-box">
+                    <h3>✓ 強み</h3>
+                    <ul>
+                        <li>品質管理領域で68.0%の高いカバー率を達成</li>
+                        <li>品質管理基本シリーズが体系的カリキュラムを提供</li>
+                        <li>QC的思考法（PDCA、データ主義）の徹底的教育</li>
+                        <li>機械設計・製図の実務的技術教育が充実</li>
+                    </ul>
+                </div>
+                <div class="weakness-box">
+                    <h3>⚠ 課題</h3>
+                    <ul>
+                        <li>生産計画・工程管理が完全未対応（0%）</li>
+                        <li>原価管理21項目が完全未対応</li>
+                        <li>納期管理11項目が完全未対応</li>
+                        <li>環境管理14項目が完全未対応</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-container">
+                    <div class="chart-title">専門知識 vs 共通知識 カバー率比較</div>
+                    <canvas id="coverageComparisonChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">対応状況の内訳</div>
+                    <canvas id="coverageStatusChart"></canvas>
+                </div>
+            </div>
+
+            <div style="margin-top: 40px; padding: 30px; background: #edf2f7; border-radius: 12px;">
+                <h3 style="color: #2d3748; margin-bottom: 15px; font-size: 1.3em;">📊 カバー率分布</h3>
+                <table class="coverage-table">
+                    <thead>
+                        <tr>
+                            <th>区分</th>
+                            <th>総項目数</th>
+                            <th>対応項目数<br>(80%以上)</th>
+                            <th>一部対応<br>(50-79%)</th>
+                            <th>限定的対応<br>(1-49%)</th>
+                            <th>未対応<br>(0%)</th>
+                            <th>平均カバー率</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>【専門知識】</strong></td>
+                            <td>26</td>
+                            <td>0</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>18</td>
+                            <td><strong>14.6%</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>【共通知識】</strong></td>
+                            <td>77</td>
+                            <td>6</td>
+                            <td>14</td>
+                            <td>11</td>
+                            <td>46</td>
+                            <td><strong>21.9%</strong></td>
+                        </tr>
+                        <tr style="background: #f7fafc; font-weight: 600;">
+                            <td><strong>全体</strong></td>
+                            <td>103</td>
+                            <td>6</td>
+                            <td>18</td>
+                            <td>15</td>
+                            <td>64</td>
+                            <td><strong>20.1%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ページ2: 詳細分析 -->
+        <div class="page" id="page2">
+            <div class="header">
+                <h1>詳細分析</h1>
+                <div class="meta">セクション別カバー率と対応状況</div>
+            </div>
+
+            <div class="summary-box">
+                <h4>📋 このページの要点</h4>
+                <ul>
+                    <li>専門知識セクションは平均14.6%と低い</li>
+                    <li>共通知識セクションは平均21.9%、品質管理は68.0%</li>
+                    <li>原価管理、納期管理、環境管理が完全未対応</li>
+                    <li>講座一覧と試験範囲の詳細対応表を掲載</li>
+                </ul>
+            </div>
+
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterTable('all', event)">すべて</button>
+                <button class="filter-btn" onclick="filterTable('match', event)">✓ 対応済み</button>
+                <button class="filter-btn" onclick="filterTable('no-match', event)">未対応</button>
+                <button class="filter-btn" onclick="filterTable('specialized', event)">専門知識</button>
+                <button class="filter-btn" onclick="filterTable('common', event)">共通知識</button>
+            </div>
+
+            <div class="section-title">【専門知識】セクション</div>
+
+            <div class="chart-container">
+                <div class="chart-title">専門知識セクション別カバー率</div>
+                <canvas id="specializedKnowledgeChart"></canvas>
+            </div>
+
+            <table class="coverage-table">
+                <thead>
+                    <tr>
+                        <th>セクション</th>
+                        <th>項目数</th>
+                        <th>平均カバー率</th>
+                        <th>状況</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Ⅰ. 生産システムと生産形態</strong></td>
+                        <td>5</td>
+                        <td><span class="coverage-badge coverage-none">0%</span></td>
+                        <td>完全未対応</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ⅱ. 製品企画と設計管理</strong></td>
+                        <td>7</td>
+                        <td><span class="coverage-badge coverage-low">45.7%</span></td>
+                        <td>部分対応（技術的側面のみ）</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ⅲ. 工程管理における生産計画</strong></td>
+                        <td>8</td>
+                        <td><span class="coverage-badge coverage-none">0%</span></td>
+                        <td>完全未対応</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ⅳ. 資材・在庫管理と生産システム</strong></td>
+                        <td>6</td>
+                        <td><span class="coverage-badge coverage-low">10.0%</span></td>
+                        <td>限定的対応</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-title" style="margin-top: 50px;">【共通知識】セクション</div>
+
+            <div class="chart-container">
+                <div class="chart-title">共通知識セクション別カバー率</div>
+                <canvas id="commonKnowledgeChart"></canvas>
+            </div>
+
+            <table class="coverage-table">
+                <thead>
+                    <tr>
+                        <th>セクション</th>
+                        <th>項目数</th>
+                        <th>平均カバー率</th>
+                        <th>状況</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Ⅰ. 品質管理</strong></td>
+                        <td>20</td>
+                        <td><span class="coverage-badge coverage-high">68.0%</span></td>
+                        <td>高いカバー率</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ⅱ. 原価管理</strong></td>
+                        <td>21</td>
+                        <td><span class="coverage-badge coverage-none">0%</span></td>
+                        <td>完全未対応</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ⅲ. 納期管理</strong></td>
+                        <td>11</td>
+                        <td><span class="coverage-badge coverage-none">0%</span></td>
+                        <td>完全未対応</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ⅳ. 安全衛生管理</strong></td>
+                        <td>11</td>
+                        <td><span class="coverage-badge coverage-low">30.0%</span></td>
+                        <td>限定的対応</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ⅴ. 環境管理</strong></td>
+                        <td>14</td>
+                        <td><span class="coverage-badge coverage-none">0%</span></td>
+                        <td>完全未対応</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-title" style="margin-top: 50px;">既存講座の強みと弱み</div>
+
+            <div class="strength-weakness">
+                <div class="strength-box">
+                    <h3>✓ 強み</h3>
+                    <ul>
+                        <li>品質管理の基礎から応用までの体系的カリキュラム（QC七つ道具、PDCA、品質保証）</li>
+                        <li>データ主義、事実に基づく管理といったQC的思考法の徹底的な教育</li>
+                        <li>機械設計・製図の実務的技術教育による設計管理領域の部分的サポート</li>
+                    </ul>
+                </div>
+                <div class="weakness-box">
+                    <h3>⚠ 弱み</h3>
+                    <ul>
+                        <li>生産計画、工程管理、在庫管理などの生産管理中核領域が完全欠落</li>
+                        <li>原価管理・原価計算の体系的教育コンテンツの不在</li>
+                        <li>納期管理、進捗管理といった実務的マネジメント手法の欠如</li>
+                        <li>環境管理、SDGs、労働安全衛生法規制など法令・社会的要請対応コンテンツの不足</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="chart-container" style="margin-top: 40px;">
+                <div class="chart-title">カバー率分布（積み上げ棒グラフ）</div>
+                <canvas id="coverageStackedChart"></canvas>
+            </div>
+
+            <div
+                style="margin-top: 40px; padding: 30px; background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%); border-radius: 12px;">
+                <h3 style="color: #2d3748; margin-bottom: 20px; font-size: 1.3em;">📈 カバー率の内訳</h3>
+                <p style="color: #4a5568; line-height: 2;">
+                    <strong>品質管理領域（共通知識Ⅰ）</strong>において68.0%の高いカバー率を達成しています。特に「品質管理基本シリーズ」（QC的考え方コース、管理コース、品質コース）は、品質管理の考え方、データ活用、品質改善の進め方において80-90%の対応率を示し、試験対策として十分に活用可能です。<br><br>
+                    一方で、生産管理の中核をなす<strong>専門知識セクション全体のカバー率は14.6%に留まります</strong>。特に「Ⅰ.生産システムと生産形態」「Ⅲ.工程管理における生産計画」は完全未対応（0%）であり、生産計画立案、工程管理、在庫管理、IE手法といった生産管理固有の知識領域に対する講座が存在しません。
+                </p>
+            </div>
+
+            <div class="section-title" style="margin-top: 50px;">講座一覧と試験範囲の対応表</div>
+
+            <div style="margin: 30px 0;">
+                <div style="background: #f7fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                    <p style="color: #4a5568; margin-bottom: 15px;">
+                        <strong>凡例:</strong>
+                        <span
+                            style="display: inline-block; margin-left: 15px; padding: 5px 12px; background: #c6f6d5; border-radius: 5px; color: #22543d; font-size: 0.9em;">✓
+                            一致</span>
+                        <span
+                            style="display: inline-block; margin-left: 10px; padding: 5px 12px; background: #fed7d7; border-radius: 5px; color: #742a2a; font-size: 0.9em;">未対応</span>
+                    </p>
+                    <p style="color: #718096; font-size: 0.95em;">
+                        試験範囲の項目と講座内容を比較し、一致している項目を緑色で表示しています。
+                    </p>
+                </div>
+                <div id="courseComparisonTable" style="overflow-x: auto;">
+                    <!-- 比較表はJavaScriptで動的に生成 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ページ3: 改善提案 -->
+        <div class="page" id="page3">
+            <div class="header">
+                <h1>改善提案とアクションプラン</h1>
+                <div class="meta">今後の講座開発に向けた優先順位付け</div>
+            </div>
+
+            <div class="summary-box">
+                <h4>📋 このページの要点</h4>
+                <ul>
+                    <li>最優先：生産計画・工程管理講座の開発（カバー率+8%）</li>
+                    <li>高優先度：原価管理基礎講座の開発（カバー率+20%）</li>
+                    <li>中優先度：資材・在庫管理、納期管理講座の開発</li>
+                    <li>推奨学習順序：導入期→展開期→統合期→完成期（7ヶ月）</li>
+                </ul>
+            </div>
+
+            <div class="section-title">優先度別改善提案</div>
+
+            <div class="chart-container">
+                <div class="chart-title">改善提案の優先度と期待効果</div>
+                <canvas id="proposalImpactChart"></canvas>
+            </div>
+
+            <div class="proposal-card">
+                <span class="priority">【最優先】</span>
+                <h3>1. 生産計画・工程管理講座の新規開発</h3>
+                <p><strong>対象範囲:</strong> 専門知識Ⅲ「工程管理における生産計画」（8項目）</p>
+                <ul>
+                    <li>生産計画立案手法、負荷と能力のバランシング</li>
+                    <li>スケジューリング基礎、MRP概念</li>
+                    <li>生産統制の仕組み</li>
+                </ul>
+                <div class="impact-badge">期待効果: 全体カバー率を約8%向上</div>
+            </div>
+
+            <div class="proposal-card">
+                <span class="priority">【高優先度】</span>
+                <h3>2. 原価管理基礎講座の開発</h3>
+                <p><strong>対象範囲:</strong> 共通知識Ⅱ「原価管理」（21項目）</p>
+                <ul>
+                    <li>原価の構成（材料費・労務費・経費、固定費・変動費）</li>
+                    <li>原価計算手法（実際原価・標準原価）</li>
+                    <li>原価企画、原価低減手法</li>
+                </ul>
+                <div class="impact-badge">期待効果: 全体カバー率を約20%向上（最大の未対応領域を解消）</div>
+            </div>
+
+            <div class="proposal-card">
+                <span class="priority">【中優先度】</span>
+                <h3>3. 資材・在庫管理と生産システム講座の開発</h3>
+                <p><strong>対象範囲:</strong> 専門知識Ⅳ「資材・在庫管理と生産システム」（6項目）</p>
+                <ul>
+                    <li>部品展開（BOM）、在庫管理方式（定量発注・定期発注・ABC分析）</li>
+                    <li>IE基礎（動作研究・時間研究）</li>
+                    <li>工程編成とラインバランシング</li>
+                </ul>
+                <div class="impact-badge">期待効果: 生産現場の実務的管理手法を補完</div>
+            </div>
+
+            <div class="proposal-card">
+                <span class="priority">【中優先度】</span>
+                <h3>4. 納期管理・進捗管理講座の開発</h3>
+                <p><strong>対象範囲:</strong> 共通知識Ⅲ「納期管理」（11項目）</p>
+                <ul>
+                    <li>納期遅延要因分析</li>
+                    <li>進捗管理手法（ガントチャート、PERT）</li>
+                    <li>目で見る管理（可視化手法）</li>
+                </ul>
+                <div class="impact-badge">期待効果: QCD管理の「D（納期）」領域を強化</div>
+            </div>
+
+            <div class="proposal-card">
+                <span class="priority">【低優先度】</span>
+                <h3>5. 環境管理・SDGs講座の開発</h3>
+                <p><strong>対象範囲:</strong> 共通知識Ⅴ「環境管理」（14項目）</p>
+                <ul>
+                    <li>環境基本法、公害防止対策（大気・水質・土壌・騒音）</li>
+                    <li>環境マネジメントシステム（ISO14001）</li>
+                    <li>SDGs17ゴールと製造業の取り組み</li>
+                </ul>
+                <div class="impact-badge">期待効果: 現代的な社会的要請への対応、企業の持続可能性教育</div>
+            </div>
+
+            <div class="section-title" style="margin-top: 50px;">推奨学習順序</div>
+
+            <div style="background: #f7fafc; padding: 30px; border-radius: 12px; margin: 30px 0;">
+                <div style="display: grid; gap: 20px;">
+                    <div style="padding: 20px; background: white; border-radius: 8px; border-left: 5px solid #667eea;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">1. 導入期（1-2ヶ月目）</h4>
+                        <p>品質管理基本シリーズで基礎的な管理思考（PDCA、データ主義）を習得</p>
+                    </div>
+                    <div style="padding: 20px; background: white; border-radius: 8px; border-left: 5px solid #667eea;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">2. 展開期（3-4ヶ月目）</h4>
+                        <p>生産計画・工程管理、資材・在庫管理で生産管理の中核を学習</p>
+                    </div>
+                    <div style="padding: 20px; background: white; border-radius: 8px; border-left: 5px solid #667eea;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">3. 統合期（5-6ヶ月目）</h4>
+                        <p>原価管理、納期管理、設計管理で多角的な管理視点を統合</p>
+                    </div>
+                    <div style="padding: 20px; background: white; border-radius: 8px; border-left: 5px solid #667eea;">
+                        <h4 style="color: #667eea; margin-bottom: 10px;">4. 完成期（7ヶ月目）</h4>
+                        <p>安全衛生管理、環境管理で法令・社会的責任を理解</p>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                style="margin-top: 40px; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px;">
+                <h3 style="margin-bottom: 20px; font-size: 1.5em;">💡 スキル連動の観点</h3>
+                <p style="line-height: 2; font-size: 1.05em;">
+                    既存の「品質管理基本シリーズ」は、生産管理の基盤となる<strong>問題解決思考とデータ分析スキル</strong>を提供しています。新規開発講座では、これらのスキルを前提として、生産計画におけるデータ活用（需要予測、負荷分析）、原価管理におけるデータ分析（差異分析、原価低減効果測定）といった応用展開を図ることで、学習効果が相乗的に高まる設計が望ましいです。
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-navigation">
+        <button onclick="goToPage(1)">1</button>
+        <button onclick="goToPage(2)">2</button>
+        <button onclick="goToPage(3)">3</button>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 3;
+
+        function goToPage(pageNum) {
+            currentPage = pageNum;
+            const page = document.getElementById(`page${pageNum}`);
+            if (page) {
+                page.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            updateNavigation();
+        }
+
+        function updateNavigation() {
+            const buttons = document.querySelectorAll('.page-navigation button');
+            buttons.forEach((btn, index) => {
+                if (index + 1 === currentPage) {
+                    btn.style.background = '#764ba2';
+                } else {
+                    btn.style.background = '#667eea';
+                }
+            });
+        }
+
+        // 初期化
+        updateNavigation();
+
+        // Chart.jsの設定
+        Chart.defaults.font.family = "'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif";
+        Chart.defaults.font.size = 12;
+        Chart.defaults.color = '#4a5568';
+
+        // ページ1: 専門知識 vs 共通知識 カバー率比較
+        const ctx1 = document.getElementById('coverageComparisonChart');
+        if (ctx1) {
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['専門知識', '共通知識', '全体'],
+                    datasets: [{
+                        label: 'カバー率 (%)',
+                        data: [14.6, 21.9, 20.1],
+                        backgroundColor: [
+                            'rgba(102, 126, 234, 0.8)',
+                            'rgba(118, 75, 162, 0.8)',
+                            'rgba(102, 126, 234, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(102, 126, 234, 1)',
+                            'rgba(118, 75, 162, 1)',
+                            'rgba(102, 126, 234, 1)'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return 'カバー率: ' + context.parsed.y + '%';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function (value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ページ1: 対応状況の内訳（ドーナツチャート）
+        const ctx2 = document.getElementById('coverageStatusChart');
+        if (ctx2) {
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['完全対応 (80%以上)', '一部対応 (50-79%)', '限定的対応 (1-49%)', '未対応 (0%)'],
+                    datasets: [{
+                        data: [6, 18, 15, 64],
+                        backgroundColor: [
+                            'rgba(34, 197, 94, 0.8)',
+                            'rgba(251, 191, 36, 0.8)',
+                            'rgba(251, 146, 60, 0.8)',
+                            'rgba(226, 232, 240, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(34, 197, 94, 1)',
+                            'rgba(251, 191, 36, 1)',
+                            'rgba(251, 146, 60, 1)',
+                            'rgba(226, 232, 240, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return label + ': ' + value + '項目 (' + percentage + '%)';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ページ2: 専門知識セクション別カバー率
+        const ctx3 = document.getElementById('specializedKnowledgeChart');
+        if (ctx3) {
+            new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: ['Ⅰ. 生産システムと生産形態', 'Ⅱ. 製品企画と設計管理', 'Ⅲ. 工程管理における生産計画', 'Ⅳ. 資材・在庫管理と生産システム'],
+                    datasets: [{
+                        label: 'カバー率 (%)',
+                        data: [0, 45.7, 0, 10.0],
+                        backgroundColor: function (context) {
+                            const value = context.parsed.y;
+                            if (value >= 50) return 'rgba(34, 197, 94, 0.8)';
+                            if (value >= 1) return 'rgba(251, 146, 60, 0.8)';
+                            return 'rgba(226, 232, 240, 0.8)';
+                        },
+                        borderColor: function (context) {
+                            const value = context.parsed.y;
+                            if (value >= 50) return 'rgba(34, 197, 94, 1)';
+                            if (value >= 1) return 'rgba(251, 146, 60, 1)';
+                            return 'rgba(226, 232, 240, 1)';
+                        },
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return 'カバー率: ' + context.parsed.x + '%';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function (value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ページ2: 共通知識セクション別カバー率
+        const ctx4 = document.getElementById('commonKnowledgeChart');
+        if (ctx4) {
+            new Chart(ctx4, {
+                type: 'bar',
+                data: {
+                    labels: ['Ⅰ. 品質管理', 'Ⅱ. 原価管理', 'Ⅲ. 納期管理', 'Ⅳ. 安全衛生管理', 'Ⅴ. 環境管理'],
+                    datasets: [{
+                        label: 'カバー率 (%)',
+                        data: [68.0, 0, 0, 30.0, 0],
+                        backgroundColor: function (context) {
+                            const value = context.parsed.y;
+                            if (value >= 50) return 'rgba(34, 197, 94, 0.8)';
+                            if (value >= 1) return 'rgba(251, 146, 60, 0.8)';
+                            return 'rgba(226, 232, 240, 0.8)';
+                        },
+                        borderColor: function (context) {
+                            const value = context.parsed.y;
+                            if (value >= 50) return 'rgba(34, 197, 94, 1)';
+                            if (value >= 1) return 'rgba(251, 146, 60, 1)';
+                            return 'rgba(226, 232, 240, 1)';
+                        },
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return 'カバー率: ' + context.parsed.x + '%';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function (value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ページ2: カバー率分布（積み上げ棒グラフ）
+        const ctx5 = document.getElementById('coverageStackedChart');
+        if (ctx5) {
+            new Chart(ctx5, {
+                type: 'bar',
+                data: {
+                    labels: ['専門知識', '共通知識', '全体'],
+                    datasets: [
+                        {
+                            label: '完全対応 (80%以上)',
+                            data: [0, 6, 6],
+                            backgroundColor: 'rgba(34, 197, 94, 0.8)',
+                            borderColor: 'rgba(34, 197, 94, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: '一部対応 (50-79%)',
+                            data: [4, 14, 18],
+                            backgroundColor: 'rgba(251, 191, 36, 0.8)',
+                            borderColor: 'rgba(251, 191, 36, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: '限定的対応 (1-49%)',
+                            data: [4, 11, 15],
+                            backgroundColor: 'rgba(251, 146, 60, 0.8)',
+                            borderColor: 'rgba(251, 146, 60, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: '未対応 (0%)',
+                            data: [18, 46, 64],
+                            backgroundColor: 'rgba(226, 232, 240, 0.8)',
+                            borderColor: 'rgba(226, 232, 240, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                footer: function (tooltipItems) {
+                                    let total = 0;
+                                    tooltipItems.forEach(function (tooltipItem) {
+                                        total += tooltipItem.parsed.y;
+                                    });
+                                    return '合計: ' + total + '項目';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 10
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ページ3: 改善提案の優先度と期待効果
+        const ctx6 = document.getElementById('proposalImpactChart');
+        if (ctx6) {
+            new Chart(ctx6, {
+                type: 'bar',
+                data: {
+                    labels: ['生産計画・工程管理', '原価管理基礎', '資材・在庫管理', '納期管理・進捗管理', '環境管理・SDGs'],
+                    datasets: [{
+                        label: '期待効果（カバー率向上%）',
+                        data: [8, 20, 6, 11, 14],
+                        backgroundColor: function (context) {
+                            const index = context.dataIndex;
+                            if (index === 0) return 'rgba(239, 68, 68, 0.8)'; // 最優先
+                            if (index === 1) return 'rgba(251, 146, 60, 0.8)'; // 高優先度
+                            return 'rgba(102, 126, 234, 0.8)'; // 中・低優先度
+                        },
+                        borderColor: function (context) {
+                            const index = context.dataIndex;
+                            if (index === 0) return 'rgba(239, 68, 68, 1)';
+                            if (index === 1) return 'rgba(251, 146, 60, 1)';
+                            return 'rgba(102, 126, 234, 1)';
+                        },
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return '期待効果: カバー率を約' + context.parsed.x + '%向上';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 25,
+                            ticks: {
+                                callback: function (value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // CSVデータの読み込みと比較表の生成
+        async function loadCSVAndGenerateTable() {
+            try {
+                // CSVファイルを読み込む
+                const [planningCSV, courseCSV] = await Promise.all([
+                    fetch('生産管理プランニング.csv').then(r => r.text()),
+                    fetch('電気電子・機械設計向け.csv').then(r => r.text())
+                ]);
+
+                // CSVをパース
+                const planningData = parseCSV(planningCSV);
+                const courseData = parseCourseCSV(courseCSV);
+
+                // 比較表を生成
+                generateComparisonTable(planningData, courseData);
+            } catch (error) {
+                console.error('CSVファイルの読み込みエラー:', error);
+                // エラー時はフォールバックとして簡易版を表示
+                generateFallbackTable();
+            }
+        }
+
+        function parseCSV(csvText) {
+            const lines = csvText.split('\n');
+            const data = [];
+            let currentSection = '';
+            let currentSubsection = '';
+
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+
+                const cols = line.split(',').map(c => c.trim());
+                if (cols.length < 4) continue;
+
+                const [category, major, middle, minor] = cols;
+
+                if (category && category.includes('専門知識') || category.includes('共通知識')) {
+                    currentSection = category;
+                }
+                if (major && major.match(/^[Ⅰ-Ⅴ]/)) {
+                    currentSubsection = major;
+                }
+
+                if (minor && minor.startsWith('（')) {
+                    data.push({
+                        category: currentSection,
+                        major: currentSubsection,
+                        middle: middle || '',
+                        minor: minor
+                    });
+                }
+            }
+            return data;
+        }
+
+        function parseCourseCSV(csvText) {
+            const lines = csvText.split('\n');
+            const courses = [];
+            let currentCourse = '';
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line || line === ',') continue;
+
+                // 講座名の行を検出（カンマが1つだけ、または最初のカラムが空でない）
+                if (!line.includes(',') || line.split(',').filter(c => c.trim()).length === 1) {
+                    if (line && !line.startsWith('No.') && !line.startsWith('章・節')) {
+                        currentCourse = line.split(',')[0].trim();
+                        if (currentCourse) {
+                            courses.push({
+                                name: currentCourse,
+                                items: []
+                            });
+                        }
+                    }
+                } else {
+                    // 講座の項目を追加
+                    const cols = line.split(',');
+                    if (cols.length >= 2 && cols[1].trim()) {
+                        const item = cols[1].trim();
+                        if (item && !item.match(/^\d+$/)) {
+                            if (courses.length > 0) {
+                                courses[courses.length - 1].items.push(item);
+                            }
+                        }
+                    }
+                }
+            }
+            return courses;
+        }
+
+        function checkMatch(examItem, courseItems) {
+            // キーワードマッチング
+            const keywords = extractKeywords(examItem);
+            for (const courseItem of courseItems) {
+                for (const keyword of keywords) {
+                    if (courseItem.includes(keyword) || keyword.includes(courseItem)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function extractKeywords(text) {
+            // 括弧内のテキストや主要なキーワードを抽出
+            const keywords = [];
+            // 括弧内のテキスト
+            const matches = text.match(/（([^）]+)）/g);
+            if (matches) {
+                matches.forEach(m => keywords.push(m.replace(/[（）]/g, '')));
+            }
+            // 主要な単語
+            const words = text.replace(/[（）、。]/g, ' ').split(/\s+/).filter(w => w.length > 1);
+            keywords.push(...words);
+            return keywords;
+        }
+
+        function generateComparisonTable(planningData, courseData) {
+            const container = document.getElementById('courseComparisonTable');
+            if (!container) return;
+
+            // 主要な講座のみを抽出（品質管理関連など）
+            const mainCourses = courseData.filter(c =>
+                c.name.includes('品質管理') ||
+                c.name.includes('設計') ||
+                c.name.includes('加工') ||
+                c.name.includes('メンテナンス')
+            );
+
+            let html = '<table class="comparison-table"><thead><tr>';
+            html += '<th style="width: 15%;">区分</th>';
+            html += '<th style="width: 20%;">大分類</th>';
+            html += '<th style="width: 25%;">中分類</th>';
+            html += '<th style="width: 30%;">小分類（試験範囲）</th>';
+            html += '<th style="width: 10%;">対応講座</th>';
+            html += '</tr></thead><tbody>';
+
+            let currentCategory = '';
+            let currentMajor = '';
+
+            for (const item of planningData) {
+                // カテゴリヘッダー
+                if (item.category !== currentCategory) {
+                    currentCategory = item.category;
+                    html += `<tr class="section-header"><td colspan="5"><strong>${item.category}</strong></td></tr>`;
+                }
+
+                // 大分類ヘッダー
+                if (item.major !== currentMajor) {
+                    currentMajor = item.major;
+                    html += `<tr class="subsection-header"><td colspan="5">${item.major}</td></tr>`;
+                }
+
+                // 一致する講座を検索
+                const matchingCourses = [];
+                for (const course of mainCourses) {
+                    if (checkMatch(item.minor, course.items)) {
+                        matchingCourses.push(course.name);
+                    }
+                }
+
+                html += '<tr>';
+                html += `<td>${item.category.replace(/[【】]/g, '')}</td>`;
+                html += `<td>${item.major}</td>`;
+                html += `<td>${item.middle}</td>`;
+                html += `<td>${item.minor}</td>`;
+
+                if (matchingCourses.length > 0) {
+                    html += `<td class="match-cell">✓ ${matchingCourses.slice(0, 2).join('<br>')}</td>`;
+                } else {
+                    html += '<td class="no-match-cell">未対応</td>';
+                }
+                html += '</tr>';
+            }
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function generateFallbackTable() {
+            const container = document.getElementById('courseComparisonTable');
+            if (!container) return;
+
+            container.innerHTML = `
+                <div style="padding: 40px; text-align: center; color: #718096;">
+                    <p>CSVファイルを読み込んでいます...</p>
+                    <p style="font-size: 0.9em; margin-top: 10px;">ファイルが読み込めない場合は、ブラウザのコンソールを確認してください。</p>
+                </div>
+            `;
+        }
+
+        // ページ読み込み時に実行
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadCSVAndGenerateTable);
+        } else {
+            loadCSVAndGenerateTable();
+        }
+
+        // 検索機能
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function (e) {
+                const searchTerm = e.target.value.toLowerCase();
+                highlightSearchTerm(searchTerm);
+            });
+        }
+
+        function highlightSearchTerm(term) {
+            if (!term) {
+                // ハイライトを削除
+                document.querySelectorAll('.highlight').forEach(el => {
+                    const parent = el.parentNode;
+                    parent.replaceChild(document.createTextNode(el.textContent), el);
+                    parent.normalize();
+                });
+                return;
+            }
+
+            // テキストノードを検索してハイライト
+            const walker = document.createTreeWalker(
+                document.body,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+
+            const textNodes = [];
+            let node;
+            while (node = walker.nextNode()) {
+                if (node.textContent.toLowerCase().includes(term)) {
+                    textNodes.push(node);
+                }
+            }
+
+            textNodes.forEach(textNode => {
+                const parent = textNode.parentNode;
+                if (parent.classList.contains('highlight')) return;
+
+                const text = textNode.textContent;
+                const regex = new RegExp(`(${term})`, 'gi');
+                const highlightedText = text.replace(regex, '<span class="highlight">$1</span>');
+
+                if (highlightedText !== text) {
+                    const wrapper = document.createElement('span');
+                    wrapper.innerHTML = highlightedText;
+                    parent.replaceChild(wrapper, textNode);
+                }
+            });
+        }
+
+        // フィルター機能
+        function filterTable(type, event) {
+            // フィルターボタンの状態を更新
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+
+            const table = document.querySelector('.comparison-table');
+            if (!table) return;
+
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                if (row.classList.contains('section-header') || row.classList.contains('subsection-header')) {
+                    row.style.display = '';
+                    return;
+                }
+
+                const matchCell = row.querySelector('.match-cell');
+                const noMatchCell = row.querySelector('.no-match-cell');
+                const category = row.cells[0]?.textContent || '';
+
+                let show = true;
+                switch (type) {
+                    case 'match':
+                        show = !!matchCell;
+                        break;
+                    case 'no-match':
+                        show = !!noMatchCell;
+                        break;
+                    case 'specialized':
+                        show = category.includes('専門知識');
+                        break;
+                    case 'common':
+                        show = category.includes('共通知識');
+                        break;
+                    default:
+                        show = true;
+                }
+
+                row.style.display = show ? '' : 'none';
+            });
+        }
+
+        // 印刷機能
+        function printReport() {
+            window.print();
+        }
+
+        // PDFエクスポート機能（簡易版）
+        function exportToPDF() {
+            alert('PDFエクスポート機能を使用するには、ブラウザの「印刷」機能から「PDFに保存」を選択してください。');
+            window.print();
+        }
+
+        // スクロール時の目次ハイライト
+        function updateTOCHighlight() {
+            const pages = document.querySelectorAll('.page');
+            const tocItems = document.querySelectorAll('.toc-item');
+
+            let currentPage = 1;
+            pages.forEach((page, index) => {
+                const rect = page.getBoundingClientRect();
+                if (rect.top <= 100 && rect.bottom >= 100) {
+                    currentPage = index + 1;
+                }
+            });
+
+            tocItems.forEach((item, index) => {
+                if (index + 1 === currentPage) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateTOCHighlight);
+        updateTOCHighlight();
+    </script>
+</body>
+
+</html>
