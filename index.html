@@ -1840,7 +1840,9 @@
 
             const headerLine = headers.map(escapeCell).join(',');
             const lines = rows.map(row => keys.map(key => escapeCell(row[key] ?? '')).join(','));
-            return [headerLine, ...lines].join('\n');
+            // Excelでの文字化けを防ぐためにBOMを付与
+            const csvBody = [headerLine, ...lines].join('\n');
+            return '\ufeff' + csvBody;
         }
 
         function updateCoverageCard(type, rows) {
