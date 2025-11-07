@@ -431,6 +431,12 @@
             color: #742a2a;
         }
 
+        .comparison-table .supplement-cell {
+            background: #bee3f8;
+            color: #2c5282;
+            font-weight: 600;
+        }
+
         .comparison-table .section-header {
             background: #edf2f7;
             font-weight: 700;
@@ -1002,17 +1008,28 @@
                 <div style="background: #f7fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
                     <p style="color: #4a5568; margin-bottom: 15px;">
                         <strong>凡例:</strong>
-                        <span
-                            style="display: inline-block; margin-left: 15px; padding: 5px 12px; background: #c6f6d5; border-radius: 5px; color: #22543d; font-size: 0.9em;">✓
-                            一致</span>
-                        <span
-                            style="display: inline-block; margin-left: 10px; padding: 5px 12px; background: #fed7d7; border-radius: 5px; color: #742a2a; font-size: 0.9em;">未対応</span>
+                        <span style="display: inline-block; margin-left: 15px; padding: 5px 12px; background: #c6f6d5; border-radius: 5px; color: #22543d; font-size: 0.9em;">✓ 電気電子・機械設計向け講座で対応</span>
+                        <span style="display: inline-block; margin-left: 10px; padding: 5px 12px; background: #bee3f8; border-radius: 5px; color: #2c5282; font-size: 0.9em;">🔵 オペレーション/プランニングで補完</span>
+                        <span style="display: inline-block; margin-left: 10px; padding: 5px 12px; background: #fed7d7; border-radius: 5px; color: #742a2a; font-size: 0.9em;">未対応</span>
                     </p>
                     <p style="color: #718096; font-size: 0.95em;">
-                        試験範囲の項目と講座内容を比較し、一致している項目を緑色で表示しています。
+                        <strong>プロシーズ社の電気電子・機械設計向け講座</strong>を主軸に、<strong>オペレーション</strong>と<strong>プランニング</strong>がどのように補完しているかを表示しています。
                     </p>
                 </div>
-                <div id="courseComparisonTable" style="overflow-x: auto;">
+
+                <!-- タブ切り替え -->
+                <div class="filter-buttons" style="margin-bottom: 20px;">
+                    <button class="filter-btn active" id="tab-operation" onclick="switchTableTab('operation')">📋 オペレーション試験範囲</button>
+                    <button class="filter-btn" id="tab-planning" onclick="switchTableTab('planning')">📋 プランニング試験範囲</button>
+                </div>
+
+                <!-- オペレーション用の表 -->
+                <div id="operationTable" style="overflow-x: auto;">
+                    <!-- 比較表はJavaScriptで動的に生成 -->
+                </div>
+
+                <!-- プランニング用の表 -->
+                <div id="planningTable" style="overflow-x: auto; display: none;">
                     <!-- 比較表はJavaScriptで動的に生成 -->
                 </div>
             </div>
@@ -1534,17 +1551,19 @@
         async function loadCSVAndGenerateTable() {
             try {
                 // CSVファイルを読み込む
-                const [planningCSV, courseCSV] = await Promise.all([
+                const [operationCSV, planningCSV, courseCSV] = await Promise.all([
+                    fetch('生産管理オペレーション.csv').then(r => r.text()),
                     fetch('生産管理プランニング.csv').then(r => r.text()),
                     fetch('電気電子・機械設計向け.csv').then(r => r.text())
                 ]);
 
                 // CSVをパース
+                const operationData = parseCSV(operationCSV);
                 const planningData = parseCSV(planningCSV);
                 const courseData = parseCourseCSV(courseCSV);
 
-                // 比較表を生成
-                generateComparisonTable(planningData, courseData);
+                // 比較表を生成（オペレーションとプランニングを分けて）
+                generateComparisonTable(operationData, planningData, courseData);
             } catch (error) {
                 console.error('CSVファイルの読み込みエラー:', error);
                 // エラー時はフォールバックとして簡易版を表示
@@ -1649,30 +1668,42 @@
             return keywords;
         }
 
-        function generateComparisonTable(planningData, courseData) {
-            const container = document.getElementById('courseComparisonTable');
-            if (!container) return;
+        function generateComparisonTable(operationData, planningData, courseData) {
+            const operationContainer = document.getElementById('operationTable');
+            const planningContainer = document.getElementById('planningTable');
+            
+            if (!operationContainer || !planningContainer) return;
 
-            // 主要な講座のみを抽出（品質管理関連など）
-            const mainCourses = courseData.filter(c =>
-                c.name.includes('品質管理') ||
-                c.name.includes('設計') ||
+            // 電気電子・機械設計向け講座を主軸として使用
+            const mainCourses = courseData.filter(c => 
+                c.name.includes('品質管理') || 
+                c.name.includes('設計') || 
                 c.name.includes('加工') ||
-                c.name.includes('メンテナンス')
+                c.name.includes('メンテナンス') ||
+                c.name.includes('機械') ||
+                c.name.includes('電気')
             );
 
+            // オペレーション用の表を生成
+            generateTableForExam(operationContainer, operationData, mainCourses, 'オペレーション');
+            
+            // プランニング用の表を生成
+            generateTableForExam(planningContainer, planningData, mainCourses, 'プランニング');
+        }
+
+        function generateTableForExam(container, examData, courseData, examType) {
             let html = '<table class="comparison-table"><thead><tr>';
-            html += '<th style="width: 15%;">区分</th>';
-            html += '<th style="width: 20%;">大分類</th>';
-            html += '<th style="width: 25%;">中分類</th>';
-            html += '<th style="width: 30%;">小分類（試験範囲）</th>';
-            html += '<th style="width: 10%;">対応講座</th>';
+            html += '<th style="width: 12%;">区分</th>';
+            html += '<th style="width: 18%;">大分類</th>';
+            html += '<th style="width: 22%;">中分類</th>';
+            html += '<th style="width: 28%;">小分類（試験範囲）</th>';
+            html += '<th style="width: 20%;">電気電子・機械設計向け講座</th>';
             html += '</tr></thead><tbody>';
 
             let currentCategory = '';
             let currentMajor = '';
 
-            for (const item of planningData) {
+            for (const item of examData) {
                 // カテゴリヘッダー
                 if (item.category !== currentCategory) {
                     currentCategory = item.category;
@@ -1685,9 +1716,9 @@
                     html += `<tr class="subsection-header"><td colspan="5">${item.major}</td></tr>`;
                 }
 
-                // 一致する講座を検索
+                // 電気電子・機械設計向け講座で一致するものを検索
                 const matchingCourses = [];
-                for (const course of mainCourses) {
+                for (const course of courseData) {
                     if (checkMatch(item.minor, course.items)) {
                         matchingCourses.push(course.name);
                     }
@@ -1698,11 +1729,13 @@
                 html += `<td>${item.major}</td>`;
                 html += `<td>${item.middle}</td>`;
                 html += `<td>${item.minor}</td>`;
-
+                
                 if (matchingCourses.length > 0) {
+                    // 電気電子・機械設計向け講座で対応
                     html += `<td class="match-cell">✓ ${matchingCourses.slice(0, 2).join('<br>')}</td>`;
                 } else {
-                    html += '<td class="no-match-cell">未対応</td>';
+                    // オペレーション/プランニングで補完が必要
+                    html += `<td class="no-match-cell" style="background: #bee3f8; color: #2c5282;">🔵 ${examType}で補完</td>`;
                 }
                 html += '</tr>';
             }
@@ -1711,16 +1744,39 @@
             container.innerHTML = html;
         }
 
-        function generateFallbackTable() {
-            const container = document.getElementById('courseComparisonTable');
-            if (!container) return;
+        // タブ切り替え機能
+        function switchTableTab(type) {
+            const operationTab = document.getElementById('tab-operation');
+            const planningTab = document.getElementById('tab-planning');
+            const operationTable = document.getElementById('operationTable');
+            const planningTable = document.getElementById('planningTable');
 
-            container.innerHTML = `
+            if (type === 'operation') {
+                operationTab.classList.add('active');
+                planningTab.classList.remove('active');
+                operationTable.style.display = 'block';
+                planningTable.style.display = 'none';
+            } else {
+                operationTab.classList.remove('active');
+                planningTab.classList.add('active');
+                operationTable.style.display = 'none';
+                planningTable.style.display = 'block';
+            }
+        }
+
+        function generateFallbackTable() {
+            const operationContainer = document.getElementById('operationTable');
+            const planningContainer = document.getElementById('planningTable');
+            
+            const fallbackHTML = `
                 <div style="padding: 40px; text-align: center; color: #718096;">
                     <p>CSVファイルを読み込んでいます...</p>
                     <p style="font-size: 0.9em; margin-top: 10px;">ファイルが読み込めない場合は、ブラウザのコンソールを確認してください。</p>
                 </div>
             `;
+            
+            if (operationContainer) operationContainer.innerHTML = fallbackHTML;
+            if (planningContainer) planningContainer.innerHTML = fallbackHTML;
         }
 
         // ページ読み込み時に実行
