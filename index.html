@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生産管理3級プランニング試験範囲カバー率分析レポート</title>
+    <title>生産管理3級オペレーション/プランニング試験範囲カバー率分析レポート</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * {
@@ -716,10 +716,10 @@
         <!-- ページ1: エグゼクティブサマリー -->
         <div class="page" id="page1">
             <div class="header">
-                <h1>生産管理3級プランニング試験範囲<br>カバー率分析レポート</h1>
+                <h1>生産管理3級オペレーション/プランニング試験範囲<br>カバー率分析レポート</h1>
                 <div class="meta">
                     <strong>作成日:</strong> 2025年11月7日<br>
-                    <strong>分析対象:</strong> 生産管理3級プランニング試験範囲 vs 電気電子・機械設計向け講座
+                    <strong>分析対象:</strong> 生産管理3級オペレーション/プランニング試験範囲 vs 電気電子・機械設計向け講座
                 </div>
             </div>
 
@@ -1022,9 +1022,12 @@
 
                 <!-- タブ切り替え -->
                 <div class="filter-buttons" style="margin-bottom: 20px;">
-                    <button class="filter-btn active" id="tab-operation" onclick="switchTableTab('operation')">📋 生産管理オペレーション</button>
-                    <button class="filter-btn" id="tab-planning" onclick="switchTableTab('planning')">📋 生産管理プランニング</button>
-                    <button class="filter-btn" id="tab-course" onclick="switchTableTab('course')">📋 電気電子・機械設計向け</button>
+                    <button class="filter-btn active" id="tab-operation" onclick="switchTableTab('operation')">📋
+                        生産管理オペレーション</button>
+                    <button class="filter-btn" id="tab-planning" onclick="switchTableTab('planning')">📋
+                        生産管理プランニング</button>
+                    <button class="filter-btn" id="tab-course" onclick="switchTableTab('course')">📋
+                        電気電子・機械設計向け</button>
                 </div>
 
                 <!-- 生産管理オペレーション用の表 -->
@@ -1523,7 +1526,7 @@
 
             // 生産管理オペレーション用の表を生成
             generateTableForExam(operationContainer, operationData, mainCourses, '生産管理オペレーション');
-            
+
             // 生産管理プランニング用の表を生成
             generateTableForExam(planningContainer, planningData, mainCourses, '生産管理プランニング');
 
@@ -1663,7 +1666,7 @@
                 if (allMatches.length > 0) {
                     // 講座名の行（最初の行のみ）
                     html += `<tr class="section-header"><td rowspan="${allMatches.length}" style="vertical-align: top; font-weight: 600; background: #edf2f7;">${course.name}</td>`;
-                    
+
                     allMatches.forEach((match, index) => {
                         if (index > 0) {
                             html += '<tr>';
@@ -1685,14 +1688,14 @@
             const operationContainer = document.getElementById('operationTable');
             const planningContainer = document.getElementById('planningTable');
             const courseContainer = document.getElementById('courseTable');
-            
+
             const fallbackHTML = `
                 <div style="padding: 40px; text-align: center; color: #718096;">
                     <p>CSVファイルを読み込んでいます...</p>
                     <p style="font-size: 0.9em; margin-top: 10px;">ファイルが読み込めない場合は、ブラウザのコンソールを確認してください。</p>
                 </div>
             `;
-            
+
             if (operationContainer) operationContainer.innerHTML = fallbackHTML;
             if (planningContainer) planningContainer.innerHTML = fallbackHTML;
             if (courseContainer) courseContainer.innerHTML = fallbackHTML;
