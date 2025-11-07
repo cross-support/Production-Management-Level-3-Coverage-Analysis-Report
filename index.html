@@ -650,10 +650,19 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            text-decoration: none;
         }
 
         .download-btn:hover {
             background: #2c7a7b;
+        }
+
+        .download-btn.secondary {
+            background: #667eea;
+        }
+
+        .download-btn.secondary:hover {
+            background: #5a67d8;
         }
 
         /* ハイライト */
@@ -1070,6 +1079,7 @@
                     <button class="download-btn" onclick="downloadTable('operation')">⬇ 生産管理オペレーションをダウンロード</button>
                     <button class="download-btn" onclick="downloadTable('planning')">⬇ 生産管理プランニングをダウンロード</button>
                     <button class="download-btn" onclick="downloadTable('course')">⬇ 電気電子・機械設計向けをダウンロード</button>
+                    <a class="download-btn secondary" href="https://docs.google.com/spreadsheets/d/1NWFlaBKLHk8w74xO5FlREqppSwkmeiUFtNzDjMGBxTQ/edit?gid=0#gid=0" target="_blank" rel="noopener">🔗 Googleスプレッドシートを開く</a>
                 </div>
 
                 <!-- 生産管理オペレーション用の表 -->
