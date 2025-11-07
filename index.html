@@ -630,6 +630,32 @@
             border-color: #667eea;
         }
 
+        .download-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .download-btn {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 20px;
+            background: #38b2ac;
+            color: white;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .download-btn:hover {
+            background: #2c7a7b;
+        }
+
         /* ハイライト */
         .highlight {
             background: yellow;
@@ -1030,6 +1056,12 @@
                         電気電子・機械設計向け</button>
                 </div>
 
+                <div class="download-buttons">
+                    <button class="download-btn" onclick="downloadTable('operation')">⬇ 生産管理オペレーションをダウンロード</button>
+                    <button class="download-btn" onclick="downloadTable('planning')">⬇ 生産管理プランニングをダウンロード</button>
+                    <button class="download-btn" onclick="downloadTable('course')">⬇ 電気電子・機械設計向けをダウンロード</button>
+                </div>
+
                 <!-- 生産管理オペレーション用の表 -->
                 <div id="operationTable" style="overflow-x: auto;">
                     <!-- 比較表はJavaScriptで動的に生成 -->
@@ -1057,6 +1089,12 @@
     <script>
         let currentPage = 1;
         const totalPages = 2;
+        let operationDataCache = [];
+        let planningDataCache = [];
+        let courseDataCache = [];
+        let operationExportRows = [];
+        let planningExportRows = [];
+        let courseExportRows = [];
 
         function goToPage(pageNum) {
             currentPage = pageNum;
@@ -1402,6 +1440,10 @@
                 const planningData = parseCSV(planningCSV);
                 const courseData = parseCourseCSV(courseCSV);
 
+                operationDataCache = operationData;
+                planningDataCache = planningData;
+                courseDataCache = courseData;
+
                 // 比較表を生成（オペレーションとプランニングを分けて）
                 generateComparisonTable(operationData, planningData, courseData);
             } catch (error) {
@@ -1548,6 +1590,7 @@
 
             let currentCategory = '';
             let currentMajor = '';
+            const exportRows = [];
 
             for (const item of examData) {
                 // カテゴリヘッダー
@@ -1575,19 +1618,39 @@
                 html += `<td>${item.major}</td>`;
                 html += `<td>${item.middle}</td>`;
                 html += `<td>${item.minor}</td>`;
-
+                let status;
+                let note;
                 if (matchingCourses.length > 0) {
                     // 対応可能
-                    html += `<td class="match-cell">✓ 対応可能<br><small style="font-size: 0.85em; opacity: 0.8;">${matchingCourses[0]}</small></td>`;
+                    const courseLabel = matchingCourses.join(' / ');
+                    status = '対応可能';
+                    note = courseLabel;
+                    html += `<td class="match-cell">✓ 対応可能<br><small style="font-size: 0.85em; opacity: 0.8;">${courseLabel}</small></td>`;
                 } else {
                     // 対応不可
-                    html += `<td class="no-match-cell">✗ 対応不可<br><small style="font-size: 0.85em; opacity: 0.8;">${examType}で補完必要</small></td>`;
+                    status = '対応不可';
+                    note = `${examType}で補完必要`;
+                    html += `<td class="no-match-cell">✗ 対応不可<br><small style="font-size: 0.85em; opacity: 0.8;">${note}</small></td>`;
                 }
+                exportRows.push({
+                    category: item.category.replace(/[【】]/g, ''),
+                    major: item.major,
+                    middle: item.middle,
+                    minor: item.minor,
+                    status,
+                    note
+                });
                 html += '</tr>';
             }
 
             html += '</tbody></table>';
             container.innerHTML = html;
+
+            if (examType === '生産管理オペレーション') {
+                operationExportRows = exportRows;
+            } else if (examType === '生産管理プランニング') {
+                planningExportRows = exportRows;
+            }
         }
 
         // タブ切り替え機能
@@ -1629,6 +1692,7 @@
             html += '<th style="width: 20%;">中分類</th>';
             html += '<th style="width: 15%;">小分類（試験範囲）</th>';
             html += '</tr></thead><tbody>';
+            const exportRows = [];
 
             for (const course of courses) {
                 // 各講座が対応している項目を検索
@@ -1676,12 +1740,21 @@
                         html += `<td>${match.middle}</td>`;
                         html += `<td class="match-cell">✓ ${match.minor}<br><small style="font-size: 0.85em; opacity: 0.8;">${match.examType}</small></td>`;
                         html += '</tr>';
+                        exportRows.push({
+                            courseName: course.name,
+                            category: match.category.replace(/[【】]/g, ''),
+                            major: match.major,
+                            middle: match.middle,
+                            minor: match.minor,
+                            source: match.examType
+                        });
                     });
                 }
             }
 
             html += '</tbody></table>';
             container.innerHTML = html;
+            courseExportRows = exportRows;
         }
 
         function generateFallbackTable() {
@@ -1699,6 +1772,61 @@
             if (operationContainer) operationContainer.innerHTML = fallbackHTML;
             if (planningContainer) planningContainer.innerHTML = fallbackHTML;
             if (courseContainer) courseContainer.innerHTML = fallbackHTML;
+            operationExportRows = [];
+            planningExportRows = [];
+            courseExportRows = [];
+        }
+
+        function downloadTable(type) {
+            let rows = [];
+            let headers = [];
+            let keys = [];
+            let filename = '';
+            const today = new Date().toISOString().slice(0, 10);
+
+            if (type === 'operation') {
+                rows = operationExportRows;
+                headers = ['区分', '大分類', '中分類', '小分類', '対応可否', '備考'];
+                keys = ['category', 'major', 'middle', 'minor', 'status', 'note'];
+                filename = `生産管理オペレーション対応表_${today}.csv`;
+            } else if (type === 'planning') {
+                rows = planningExportRows;
+                headers = ['区分', '大分類', '中分類', '小分類', '対応可否', '備考'];
+                keys = ['category', 'major', 'middle', 'minor', 'status', 'note'];
+                filename = `生産管理プランニング対応表_${today}.csv`;
+            } else if (type === 'course') {
+                rows = courseExportRows;
+                headers = ['プロシーズ講座', '区分', '大分類', '中分類', '小分類', '対応元'];
+                keys = ['courseName', 'category', 'major', 'middle', 'minor', 'source'];
+                filename = `電気電子・機械設計向け講座対応表_${today}.csv`;
+            }
+
+            if (!rows || rows.length === 0) {
+                alert('ダウンロード可能なデータがありません。');
+                return;
+            }
+
+            const csvContent = convertToCSV(headers, keys, rows);
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        function convertToCSV(headers, keys, rows) {
+            const escapeCell = (value) => {
+                if (value === null || value === undefined) return '""';
+                return '"' + String(value).replace(/"/g, '""') + '"';
+            };
+
+            const headerLine = headers.map(escapeCell).join(',');
+            const lines = rows.map(row => keys.map(key => escapeCell(row[key] ?? '')).join(','));
+            return [headerLine, ...lines].join('\n');
         }
 
         // ページ読み込み時に実行
