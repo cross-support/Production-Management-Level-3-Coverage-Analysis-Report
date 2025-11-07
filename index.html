@@ -710,7 +710,6 @@
         <h3>📑 目次</h3>
         <div class="toc-item" onclick="goToPage(1)">1. エグゼクティブサマリー</div>
         <div class="toc-item" onclick="goToPage(2)">2. 詳細分析</div>
-        <div class="toc-item" onclick="goToPage(3)">3. 改善提案</div>
     </div>
 
     <div class="container">
@@ -1007,18 +1006,24 @@
             <div style="margin: 30px 0;">
                 <div style="background: #f7fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
                     <p style="color: #4a5568; margin-bottom: 15px;">
-                        <strong>分析目的:</strong> オペレーション/プランニング試験範囲の各項目について、既存の<strong>プロシーズ社の電気電子・機械設計向け講座</strong>で対応できるかを確認
+                        <strong>分析目的:</strong>
+                        オペレーション/プランニング試験範囲の各項目について、既存の<strong>プロシーズ社の電気電子・機械設計向け講座</strong>で対応できるかを確認
                     </p>
                     <p style="color: #718096; font-size: 0.95em; margin-top: 10px;">
                         <strong>凡例:</strong>
-                        <span style="display: inline-block; margin-left: 15px; padding: 5px 12px; background: #c6f6d5; border-radius: 5px; color: #22543d; font-size: 0.9em;">✓ 対応可能</span>
-                        <span style="display: inline-block; margin-left: 10px; padding: 5px 12px; background: #fed7d7; border-radius: 5px; color: #742a2a; font-size: 0.9em;">✗ 対応不可</span>
+                        <span
+                            style="display: inline-block; margin-left: 15px; padding: 5px 12px; background: #c6f6d5; border-radius: 5px; color: #22543d; font-size: 0.9em;">✓
+                            対応可能</span>
+                        <span
+                            style="display: inline-block; margin-left: 10px; padding: 5px 12px; background: #fed7d7; border-radius: 5px; color: #742a2a; font-size: 0.9em;">✗
+                            対応不可</span>
                     </p>
                 </div>
 
                 <!-- タブ切り替え -->
                 <div class="filter-buttons" style="margin-bottom: 20px;">
-                    <button class="filter-btn active" id="tab-operation" onclick="switchTableTab('operation')">📋 オペレーション</button>
+                    <button class="filter-btn active" id="tab-operation" onclick="switchTableTab('operation')">📋
+                        オペレーション</button>
                     <button class="filter-btn" id="tab-planning" onclick="switchTableTab('planning')">📋 プランニング</button>
                 </div>
 
@@ -1034,132 +1039,16 @@
             </div>
         </div>
 
-        <!-- ページ3: 改善提案 -->
-        <div class="page" id="page3">
-            <div class="header">
-                <h1>改善提案とアクションプラン</h1>
-                <div class="meta">今後の講座開発に向けた優先順位付け</div>
-            </div>
-
-            <div class="summary-box">
-                <h4>📋 このページの要点</h4>
-                <ul>
-                    <li>最優先：生産計画・工程管理講座の開発（カバー率+8%）</li>
-                    <li>高優先度：原価管理基礎講座の開発（カバー率+20%）</li>
-                    <li>中優先度：資材・在庫管理、納期管理講座の開発</li>
-                    <li>推奨学習順序：導入期→展開期→統合期→完成期（7ヶ月）</li>
-                </ul>
-            </div>
-
-            <div class="section-title">優先度別改善提案</div>
-
-            <div class="chart-container">
-                <div class="chart-title">改善提案の優先度と期待効果</div>
-                <canvas id="proposalImpactChart"></canvas>
-            </div>
-
-            <div class="proposal-card">
-                <span class="priority">【最優先】</span>
-                <h3>1. 生産計画・工程管理講座の新規開発</h3>
-                <p><strong>対象範囲:</strong> 専門知識Ⅲ「工程管理における生産計画」（8項目）</p>
-                <ul>
-                    <li>生産計画立案手法、負荷と能力のバランシング</li>
-                    <li>スケジューリング基礎、MRP概念</li>
-                    <li>生産統制の仕組み</li>
-                </ul>
-                <div class="impact-badge">期待効果: 全体カバー率を約8%向上</div>
-            </div>
-
-            <div class="proposal-card">
-                <span class="priority">【高優先度】</span>
-                <h3>2. 原価管理基礎講座の開発</h3>
-                <p><strong>対象範囲:</strong> 共通知識Ⅱ「原価管理」（21項目）</p>
-                <ul>
-                    <li>原価の構成（材料費・労務費・経費、固定費・変動費）</li>
-                    <li>原価計算手法（実際原価・標準原価）</li>
-                    <li>原価企画、原価低減手法</li>
-                </ul>
-                <div class="impact-badge">期待効果: 全体カバー率を約20%向上（最大の未対応領域を解消）</div>
-            </div>
-
-            <div class="proposal-card">
-                <span class="priority">【中優先度】</span>
-                <h3>3. 資材・在庫管理と生産システム講座の開発</h3>
-                <p><strong>対象範囲:</strong> 専門知識Ⅳ「資材・在庫管理と生産システム」（6項目）</p>
-                <ul>
-                    <li>部品展開（BOM）、在庫管理方式（定量発注・定期発注・ABC分析）</li>
-                    <li>IE基礎（動作研究・時間研究）</li>
-                    <li>工程編成とラインバランシング</li>
-                </ul>
-                <div class="impact-badge">期待効果: 生産現場の実務的管理手法を補完</div>
-            </div>
-
-            <div class="proposal-card">
-                <span class="priority">【中優先度】</span>
-                <h3>4. 納期管理・進捗管理講座の開発</h3>
-                <p><strong>対象範囲:</strong> 共通知識Ⅲ「納期管理」（11項目）</p>
-                <ul>
-                    <li>納期遅延要因分析</li>
-                    <li>進捗管理手法（ガントチャート、PERT）</li>
-                    <li>目で見る管理（可視化手法）</li>
-                </ul>
-                <div class="impact-badge">期待効果: QCD管理の「D（納期）」領域を強化</div>
-            </div>
-
-            <div class="proposal-card">
-                <span class="priority">【低優先度】</span>
-                <h3>5. 環境管理・SDGs講座の開発</h3>
-                <p><strong>対象範囲:</strong> 共通知識Ⅴ「環境管理」（14項目）</p>
-                <ul>
-                    <li>環境基本法、公害防止対策（大気・水質・土壌・騒音）</li>
-                    <li>環境マネジメントシステム（ISO14001）</li>
-                    <li>SDGs17ゴールと製造業の取り組み</li>
-                </ul>
-                <div class="impact-badge">期待効果: 現代的な社会的要請への対応、企業の持続可能性教育</div>
-            </div>
-
-            <div class="section-title" style="margin-top: 50px;">推奨学習順序</div>
-
-            <div style="background: #f7fafc; padding: 30px; border-radius: 12px; margin: 30px 0;">
-                <div style="display: grid; gap: 20px;">
-                    <div style="padding: 20px; background: white; border-radius: 8px; border-left: 5px solid #667eea;">
-                        <h4 style="color: #667eea; margin-bottom: 10px;">1. 導入期（1-2ヶ月目）</h4>
-                        <p>品質管理基本シリーズで基礎的な管理思考（PDCA、データ主義）を習得</p>
-                    </div>
-                    <div style="padding: 20px; background: white; border-radius: 8px; border-left: 5px solid #667eea;">
-                        <h4 style="color: #667eea; margin-bottom: 10px;">2. 展開期（3-4ヶ月目）</h4>
-                        <p>生産計画・工程管理、資材・在庫管理で生産管理の中核を学習</p>
-                    </div>
-                    <div style="padding: 20px; background: white; border-radius: 8px; border-left: 5px solid #667eea;">
-                        <h4 style="color: #667eea; margin-bottom: 10px;">3. 統合期（5-6ヶ月目）</h4>
-                        <p>原価管理、納期管理、設計管理で多角的な管理視点を統合</p>
-                    </div>
-                    <div style="padding: 20px; background: white; border-radius: 8px; border-left: 5px solid #667eea;">
-                        <h4 style="color: #667eea; margin-bottom: 10px;">4. 完成期（7ヶ月目）</h4>
-                        <p>安全衛生管理、環境管理で法令・社会的責任を理解</p>
-                    </div>
-                </div>
-            </div>
-
-            <div
-                style="margin-top: 40px; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px;">
-                <h3 style="margin-bottom: 20px; font-size: 1.5em;">💡 スキル連動の観点</h3>
-                <p style="line-height: 2; font-size: 1.05em;">
-                    既存の「品質管理基本シリーズ」は、生産管理の基盤となる<strong>問題解決思考とデータ分析スキル</strong>を提供しています。新規開発講座では、これらのスキルを前提として、生産計画におけるデータ活用（需要予測、負荷分析）、原価管理におけるデータ分析（差異分析、原価低減効果測定）といった応用展開を図ることで、学習効果が相乗的に高まる設計が望ましいです。
-                </p>
-            </div>
-        </div>
     </div>
 
     <div class="page-navigation">
         <button onclick="goToPage(1)">1</button>
         <button onclick="goToPage(2)">2</button>
-        <button onclick="goToPage(3)">3</button>
     </div>
 
     <script>
         let currentPage = 1;
-        const totalPages = 3;
+        const totalPages = 2;
 
         function goToPage(pageNum) {
             currentPage = pageNum;
@@ -1489,62 +1378,6 @@
             });
         }
 
-        // ページ3: 改善提案の優先度と期待効果
-        const ctx6 = document.getElementById('proposalImpactChart');
-        if (ctx6) {
-            new Chart(ctx6, {
-                type: 'bar',
-                data: {
-                    labels: ['生産計画・工程管理', '原価管理基礎', '資材・在庫管理', '納期管理・進捗管理', '環境管理・SDGs'],
-                    datasets: [{
-                        label: '期待効果（カバー率向上%）',
-                        data: [8, 20, 6, 11, 14],
-                        backgroundColor: function (context) {
-                            const index = context.dataIndex;
-                            if (index === 0) return 'rgba(239, 68, 68, 0.8)'; // 最優先
-                            if (index === 1) return 'rgba(251, 146, 60, 0.8)'; // 高優先度
-                            return 'rgba(102, 126, 234, 0.8)'; // 中・低優先度
-                        },
-                        borderColor: function (context) {
-                            const index = context.dataIndex;
-                            if (index === 0) return 'rgba(239, 68, 68, 1)';
-                            if (index === 1) return 'rgba(251, 146, 60, 1)';
-                            return 'rgba(102, 126, 234, 1)';
-                        },
-                        borderWidth: 2,
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    indexAxis: 'y',
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (context) {
-                                    return '期待効果: カバー率を約' + context.parsed.x + '%向上';
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            beginAtZero: true,
-                            max: 25,
-                            ticks: {
-                                callback: function (value) {
-                                    return value + '%';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
 
         // CSVデータの読み込みと比較表の生成
         async function loadCSVAndGenerateTable() {
@@ -1728,7 +1561,7 @@
                 html += `<td>${item.major}</td>`;
                 html += `<td>${item.middle}</td>`;
                 html += `<td>${item.minor}</td>`;
-                
+
                 if (matchingCourses.length > 0) {
                     // 対応可能
                     html += `<td class="match-cell">✓ 対応可能<br><small style="font-size: 0.85em; opacity: 0.8;">${matchingCourses[0]}</small></td>`;
