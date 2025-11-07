@@ -1079,9 +1079,7 @@
                     <button class="download-btn" onclick="downloadTable('operation')">⬇ 生産管理オペレーションをダウンロード</button>
                     <button class="download-btn" onclick="downloadTable('planning')">⬇ 生産管理プランニングをダウンロード</button>
                     <button class="download-btn" onclick="downloadTable('course')">⬇ 電気電子・機械設計向けをダウンロード</button>
-                    <a class="download-btn secondary"
-                        href="https://docs.google.com/spreadsheets/d/1NWFlaBKLHk8w74xO5FlREqppSwkmeiUFtNzDjMGBxTQ/edit?gid=0#gid=0"
-                        target="_blank" rel="noopener">🔗 Googleスプレッドシートを開く</a>
+                    <a class="download-btn secondary" href="https://docs.google.com/spreadsheets/d/1NWFlaBKLHk8w74xO5FlREqppSwkmeiUFtNzDjMGBxTQ/edit?gid=0#gid=0" target="_blank" rel="noopener">🔗 Googleスプレッドシートを開く</a>
                 </div>
 
                 <!-- 生産管理オペレーション用の表 -->
@@ -1578,8 +1576,15 @@
 
             if (!operationContainer || !planningContainer) return;
 
-            // 電気電子・機械設計向け講座（CSVの並び順そのまま）
-            const mainCourses = courseData;
+            // 電気電子・機械設計向け講座を主軸として使用
+            const mainCourses = courseData.filter(c =>
+                c.name.includes('品質管理') ||
+                c.name.includes('設計') ||
+                c.name.includes('加工') ||
+                c.name.includes('メンテナンス') ||
+                c.name.includes('機械') ||
+                c.name.includes('電気')
+            );
 
             // 生産管理オペレーション用の表を生成
             generateTableForExam(operationContainer, operationData, mainCourses, '生産管理オペレーション');
@@ -1747,7 +1752,7 @@
                 if (allMatches.length > 0) {
                     // 講座名の行（最初の行のみ）
                     html += `<tr class="section-header"><td rowspan="${allMatches.length}" style="vertical-align: top; font-weight: 600; background: #edf2f7;">${course.name}</td>`;
-                    
+
                     allMatches.forEach((match, index) => {
                         if (index > 0) {
                             html += '<tr>';
@@ -1765,19 +1770,6 @@
                             minor: match.minor,
                             source: match.examType
                         });
-                    });
-                } else {
-                    html += `<tr class="section-header"><td style="font-weight: 600; background: #edf2f7;">${course.name}</td>`;
-                    html += '<td colspan="3">-</td>';
-                    html += '<td class="no-match-cell">✗ 生産管理オペレーション/プランニングに対応する項目なし</td>';
-                    html += '</tr>';
-                    exportRows.push({
-                        courseName: course.name,
-                        category: '-',
-                        major: '-',
-                        middle: '-',
-                        minor: '対応項目なし',
-                        source: '生産管理オペレーション/プランニング'
                     });
                 }
             }
