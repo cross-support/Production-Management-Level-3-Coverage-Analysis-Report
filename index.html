@@ -1449,16 +1449,16 @@
         async function loadCSVAndGenerateTable() {
             try {
                 // CSVファイルを読み込む
-                const [operationCSV, planningCSV, courseMarkdown] = await Promise.all([
+                const [operationCSV, planningCSV, courseCSV] = await Promise.all([
                     fetch('生産管理オペレーション.csv').then(r => r.text()),
                     fetch('生産管理プランニング.csv').then(r => r.text()),
-                    fetch('電気電子・機械設計向け.md').then(r => r.text())
+                    fetch('電気電子・機械設計向け.csv').then(r => r.text())
                 ]);
 
                 // CSVをパース
                 const operationData = parseCSV(operationCSV);
                 const planningData = parseCSV(planningCSV);
-                const courseData = parseCourseMarkdown(courseMarkdown);
+                const courseData = parseCourseCSV(courseCSV);
 
                 operationDataCache = operationData;
                 planningDataCache = planningData;
@@ -1505,80 +1505,6 @@
                 }
             }
             return data;
-        }
-
-        function parseCourseMarkdown(mdText) {
-            const lines = mdText.split('\n');
-            const courses = [];
-            let currentCourse = null;
-            const headerKeywords = ['No.', 'タイトル', '章', '主要テーマ', '詳細内容', '分野', '主要内容'];
-
-            const addItem = (text) => {
-                if (currentCourse) {
-                    const cleaned = text.replace(/\s+/g, ' ').trim();
-                    if (cleaned) {
-                        currentCourse.items.push(cleaned);
-                    }
-                }
-            };
-
-            for (let i = 0; i < lines.length; i++) {
-                const rawLine = lines[i];
-                const line = rawLine.trim();
-                if (!line) continue;
-
-                if (line.startsWith('### ')) {
-                    currentCourse = {
-                        name: line.replace(/^###\s*/, '').trim(),
-                        items: []
-                    };
-                    courses.push(currentCourse);
-                    continue;
-                }
-
-                if (!currentCourse) continue;
-
-                if (line.startsWith('|')) {
-                    if (/^\|\s*-+\s*\|/u.test(line)) {
-                        continue;
-                    }
-                    const cells = rawLine.split('|')
-                        .map(cell => cell.trim())
-                        .filter((_, idx, arr) => !(idx === 0 || idx === arr.length - 1));
-                    if (!cells.length) continue;
-                    if (cells.every(cell => cell === '' || /^-+$/.test(cell))) continue;
-                    if (cells.some(cell => headerKeywords.includes(cell))) continue;
-
-                    const textParts = cells.filter(cell => cell && !/^\d+$/.test(cell));
-                    if (!textParts.length && cells.length) {
-                        textParts.push(cells[cells.length - 1]);
-                    }
-                    if (textParts.length) {
-                        addItem(textParts.join(' '));
-                    }
-                    continue;
-                }
-
-                const bulletMatch = line.match(/^[-•・]\s*(.+)$/u);
-                if (bulletMatch) {
-                    addItem(bulletMatch[1]);
-                    continue;
-                }
-
-                const boldMatch = line.match(/^\*\*(.+)\*\*$/u);
-                if (boldMatch) {
-                    addItem(boldMatch[1]);
-                    continue;
-                }
-
-                const headerMatch = line.match(/^##+\s*(.+)$/u);
-                if (headerMatch) {
-                    continue;
-                }
-
-                addItem(line);
-            }
-            return courses;
         }
 
         function parseCourseCSV(csvText) {
