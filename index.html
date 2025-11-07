@@ -789,6 +789,16 @@
                     <div class="number">64</div>
                     <div class="label">項目（0%）</div>
                 </div>
+                <div class="stat-card">
+                    <h3>生産管理オペレーション一致率</h3>
+                    <div class="number" id="operationCoverageStat">--%</div>
+                    <div class="label" id="operationCoverageLabel">集計中...</div>
+                </div>
+                <div class="stat-card">
+                    <h3>生産管理プランニング一致率</h3>
+                    <div class="number" id="planningCoverageStat">--%</div>
+                    <div class="label" id="planningCoverageLabel">集計中...</div>
+                </div>
             </div>
 
             <div class="section-title">主要な発見</div>
@@ -1648,8 +1658,10 @@
 
             if (examType === '生産管理オペレーション') {
                 operationExportRows = exportRows;
+                updateCoverageCard('operation', exportRows);
             } else if (examType === '生産管理プランニング') {
                 planningExportRows = exportRows;
+                updateCoverageCard('planning', exportRows);
             }
         }
 
@@ -1755,6 +1767,7 @@
             html += '</tbody></table>';
             container.innerHTML = html;
             courseExportRows = exportRows;
+            updateCoverageCard('course', exportRows);
         }
 
         function generateFallbackTable() {
@@ -1775,6 +1788,7 @@
             operationExportRows = [];
             planningExportRows = [];
             courseExportRows = [];
+            resetCoverageCards();
         }
 
         function downloadTable(type) {
@@ -1827,6 +1841,42 @@
             const headerLine = headers.map(escapeCell).join(',');
             const lines = rows.map(row => keys.map(key => escapeCell(row[key] ?? '')).join(','));
             return [headerLine, ...lines].join('\n');
+        }
+
+        function updateCoverageCard(type, rows) {
+            let matched = 0;
+            const total = rows.length;
+            if (type === 'course') {
+                matched = total; // course viewはマッチした項目のみ表示
+            } else {
+                matched = rows.filter(row => row.status === '対応可能').length;
+            }
+
+            const percent = total ? ((matched / total) * 100).toFixed(1) : '0.0';
+            if (type === 'operation') {
+                const numberEl = document.getElementById('operationCoverageStat');
+                const labelEl = document.getElementById('operationCoverageLabel');
+                if (numberEl) numberEl.textContent = `${percent}%`;
+                if (labelEl) labelEl.textContent = `${matched} / ${total} 項目が対応`;
+            } else if (type === 'planning') {
+                const numberEl = document.getElementById('planningCoverageStat');
+                const labelEl = document.getElementById('planningCoverageLabel');
+                if (numberEl) numberEl.textContent = `${percent}%`;
+                if (labelEl) labelEl.textContent = `${matched} / ${total} 項目が対応`;
+            }
+        }
+
+        function resetCoverageCards() {
+            const defaultText = '--%';
+            const defaultLabel = '集計中...';
+            const operationStat = document.getElementById('operationCoverageStat');
+            const planningStat = document.getElementById('planningCoverageStat');
+            const operationLabel = document.getElementById('operationCoverageLabel');
+            const planningLabel = document.getElementById('planningCoverageLabel');
+            if (operationStat) operationStat.textContent = defaultText;
+            if (planningStat) planningStat.textContent = defaultText;
+            if (operationLabel) operationLabel.textContent = defaultLabel;
+            if (planningLabel) planningLabel.textContent = defaultLabel;
         }
 
         // ページ読み込み時に実行
