@@ -1008,9 +1008,14 @@
                 <div style="background: #f7fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
                     <p style="color: #4a5568; margin-bottom: 15px;">
                         <strong>凡例:</strong>
-                        <span style="display: inline-block; margin-left: 15px; padding: 5px 12px; background: #c6f6d5; border-radius: 5px; color: #22543d; font-size: 0.9em;">✓ 電気電子・機械設計向け講座で対応</span>
-                        <span style="display: inline-block; margin-left: 10px; padding: 5px 12px; background: #bee3f8; border-radius: 5px; color: #2c5282; font-size: 0.9em;">🔵 オペレーション/プランニングで補完</span>
-                        <span style="display: inline-block; margin-left: 10px; padding: 5px 12px; background: #fed7d7; border-radius: 5px; color: #742a2a; font-size: 0.9em;">未対応</span>
+                        <span
+                            style="display: inline-block; margin-left: 15px; padding: 5px 12px; background: #c6f6d5; border-radius: 5px; color: #22543d; font-size: 0.9em;">✓
+                            電気電子・機械設計向け講座で対応</span>
+                        <span
+                            style="display: inline-block; margin-left: 10px; padding: 5px 12px; background: #bee3f8; border-radius: 5px; color: #2c5282; font-size: 0.9em;">🔵
+                            オペレーション/プランニングで補完</span>
+                        <span
+                            style="display: inline-block; margin-left: 10px; padding: 5px 12px; background: #fed7d7; border-radius: 5px; color: #742a2a; font-size: 0.9em;">未対応</span>
                     </p>
                     <p style="color: #718096; font-size: 0.95em;">
                         <strong>プロシーズ社の電気電子・機械設計向け講座</strong>を主軸に、<strong>オペレーション</strong>と<strong>プランニング</strong>がどのように補完しているかを表示しています。
@@ -1019,8 +1024,10 @@
 
                 <!-- タブ切り替え -->
                 <div class="filter-buttons" style="margin-bottom: 20px;">
-                    <button class="filter-btn active" id="tab-operation" onclick="switchTableTab('operation')">📋 オペレーション試験範囲</button>
-                    <button class="filter-btn" id="tab-planning" onclick="switchTableTab('planning')">📋 プランニング試験範囲</button>
+                    <button class="filter-btn active" id="tab-operation" onclick="switchTableTab('operation')">📋
+                        オペレーション試験範囲</button>
+                    <button class="filter-btn" id="tab-planning" onclick="switchTableTab('planning')">📋
+                        プランニング試験範囲</button>
                 </div>
 
                 <!-- オペレーション用の表 -->
@@ -1671,13 +1678,13 @@
         function generateComparisonTable(operationData, planningData, courseData) {
             const operationContainer = document.getElementById('operationTable');
             const planningContainer = document.getElementById('planningTable');
-            
+
             if (!operationContainer || !planningContainer) return;
 
             // 電気電子・機械設計向け講座を主軸として使用
-            const mainCourses = courseData.filter(c => 
-                c.name.includes('品質管理') || 
-                c.name.includes('設計') || 
+            const mainCourses = courseData.filter(c =>
+                c.name.includes('品質管理') ||
+                c.name.includes('設計') ||
                 c.name.includes('加工') ||
                 c.name.includes('メンテナンス') ||
                 c.name.includes('機械') ||
@@ -1686,18 +1693,18 @@
 
             // オペレーション用の表を生成
             generateTableForExam(operationContainer, operationData, mainCourses, 'オペレーション');
-            
+
             // プランニング用の表を生成
             generateTableForExam(planningContainer, planningData, mainCourses, 'プランニング');
         }
 
         function generateTableForExam(container, examData, courseData, examType) {
             let html = '<table class="comparison-table"><thead><tr>';
-            html += '<th style="width: 12%;">区分</th>';
-            html += '<th style="width: 18%;">大分類</th>';
-            html += '<th style="width: 22%;">中分類</th>';
-            html += '<th style="width: 28%;">小分類（試験範囲）</th>';
-            html += '<th style="width: 20%;">電気電子・機械設計向け講座</th>';
+            html += '<th style="width: 10%;">区分</th>';
+            html += '<th style="width: 15%;">大分類</th>';
+            html += '<th style="width: 20%;">中分類</th>';
+            html += '<th style="width: 35%;">小分類（試験範囲）</th>';
+            html += '<th style="width: 20%;">対応可否</th>';
             html += '</tr></thead><tbody>';
 
             let currentCategory = '';
@@ -1731,11 +1738,11 @@
                 html += `<td>${item.minor}</td>`;
                 
                 if (matchingCourses.length > 0) {
-                    // 電気電子・機械設計向け講座で対応
-                    html += `<td class="match-cell">✓ ${matchingCourses.slice(0, 2).join('<br>')}</td>`;
+                    // 対応可能
+                    html += `<td class="match-cell">✓ 対応可能<br><small style="font-size: 0.85em; opacity: 0.8;">${matchingCourses[0]}</small></td>`;
                 } else {
-                    // オペレーション/プランニングで補完が必要
-                    html += `<td class="no-match-cell" style="background: #bee3f8; color: #2c5282;">🔵 ${examType}で補完</td>`;
+                    // 対応不可
+                    html += '<td class="no-match-cell">✗ 対応不可</td>';
                 }
                 html += '</tr>';
             }
@@ -1767,14 +1774,14 @@
         function generateFallbackTable() {
             const operationContainer = document.getElementById('operationTable');
             const planningContainer = document.getElementById('planningTable');
-            
+
             const fallbackHTML = `
                 <div style="padding: 40px; text-align: center; color: #718096;">
                     <p>CSVファイルを読み込んでいます...</p>
                     <p style="font-size: 0.9em; margin-top: 10px;">ファイルが読み込めない場合は、ブラウザのコンソールを確認してください。</p>
                 </div>
             `;
-            
+
             if (operationContainer) operationContainer.innerHTML = fallbackHTML;
             if (planningContainer) planningContainer.innerHTML = fallbackHTML;
         }
